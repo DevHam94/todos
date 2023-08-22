@@ -38,9 +38,19 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
 
         // 파일 경로에서 정적 자원 제공
-        registry.addResourceHandler("/assets/**")
-                .addResourceLocations("file:/Users/arawn/springrunner/workspace/todos/files/assets");
+        //registry
+        //        .addResourceHandler("/assets/**")
+        //        .addResourceLocations("file:/Users/arawn/springrunner/workspace/todos/files/assets");
 
+        // 클래스패스 경로에서 정적 자원 제공
+        // registry.addResourceHandler("/assets/**").addResourceLocations("classpath:assets/");
+
+        registry
+                .addResourceHandler("/assets/**")
+                .addResourceLocations(
+                        "assets/",
+                        "file:/Users/arawn/springrunner/workspace/todos/files/assets",
+                        "classpath:assets/");
     }
 
     /**
