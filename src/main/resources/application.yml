@@ -1,4 +1,6 @@
 logging:
   level:
+    org.springframework.beans: debug
     org.springframework.web: debug
+
 
