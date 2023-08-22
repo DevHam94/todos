@@ -1,5 +1,6 @@
 logging:
   level:
+    todoapp: debug
     org.springframework.beans: debug
     org.springframework.web: debug
 
