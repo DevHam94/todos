@@ -35,7 +35,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // https://localhost:8080/assets/css/todos.css
 
         // 서블릿 컨텍스트 경로에서 정적 자원 제공
-        registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
+//        registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
 
         // 파일 경로에서 정적 자원 제공
         //registry
@@ -45,12 +45,12 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // 클래스패스 경로에서 정적 자원 제공
         // registry.addResourceHandler("/assets/**").addResourceLocations("classpath:assets/");
 
-        registry
-                .addResourceHandler("/assets/**")
-                .addResourceLocations(
-                        "assets/",
-                        "file:/Users/arawn/springrunner/workspace/todos/files/assets",
-                        "classpath:assets/");
+        //registry
+//                .addResourceHandler("/assets/**")
+//                .addResourceLocations(
+//                        "assets/",
+//                        "file:/Users/arawn/springrunner/workspace/todos/files/assets",
+//                        "classpath:assets/");
     }
 
     /**
