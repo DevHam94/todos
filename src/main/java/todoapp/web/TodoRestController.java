@@ -9,6 +9,9 @@ import todoapp.core.todos.application.TodoEditor;
 import todoapp.core.todos.application.TodoFinder;
 import todoapp.core.todos.domain.Todo;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 
@@ -32,14 +35,23 @@ public class TodoRestController {
 
     @PostMapping("/api/todos")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody CreateTodoCommand command) {
+    public void create(@RequestBody @Valid WriteTodoCommand command) {
         logger.debug("request command: {}", command);
 
         editor.create(command.getTitle());
     }
 
-    static class CreateTodoCommand {
+    @PutMapping("/api/todos/{id}")
+    public void update(@PathVariable("id") Long id, @RequestBody @Valid WriteTodoCommand) {
+        logger.debug("request update id: {}", id);
 
+        editor.update()
+    }
+
+    static class WriteTodoCommand {
+
+        @NotBlank
+        @Size(min = 4, max = 140)
         private String title;
 
         public String getTitle() {
