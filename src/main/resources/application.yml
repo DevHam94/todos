@@ -1,3 +1,7 @@
+todos:
+  data:
+    initialize: true
+
 site:
   author: 스프링러너
   description: what're your plans today?
