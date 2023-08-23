@@ -1,3 +1,7 @@
+site:
+  author: 스프링러너
+  description: what're your plans today?
+
 logging:
   level:
     todoapp: debug
