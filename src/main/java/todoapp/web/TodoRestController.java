@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Controller
+@RequestMapping("/api/todos")
 public class TodoRestController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,12 +28,12 @@ public class TodoRestController {
         this.editor = editor;
     }
 
-    @GetMapping("/api/todos")
+    @GetMapping
     public List<Todo> list() {
         return finder.getAll();
     }
 
-    @PostMapping("/api/todos")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Valid WriteTodoCommand command) {
         logger.debug("request command: {}", command);
@@ -41,14 +41,14 @@ public class TodoRestController {
         editor.create(command.getTitle());
     }
 
-    @PutMapping("/api/todos/{id}")
+    @PutMapping("/{id}")
     public void update(@PathVariable("id") Long id, @RequestBody @Valid WriteTodoCommand command) {
         logger.debug("request update id: {}", id);
 
         editor.update(id, command.getTitle(), command.isCompleted());
     }
 
-    @DeleteMapping("/api/todos/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         logger.debug("delete todo, id: {}", id);
 
