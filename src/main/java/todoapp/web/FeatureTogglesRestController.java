@@ -1,5 +1,11 @@
 package todoapp.web;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import todoapp.web.model.FeatureTogglesProperties;
+
 /**
  * `5) 확장 기능 활성화` 요구사항을 구현해보세요.
  *
@@ -13,9 +19,20 @@ package todoapp.web;
  * response body:
  *     {
  *         "auth": true,
- *             "onlineUsersCounter": false
+ *         "onlineUsersCounter": false
  *     }
  */
+@RestController
 public class FeatureTogglesRestController {
 
+    private final FeatureTogglesProperties featureTogglesProperties;
+
+    public FeatureTogglesRestController(FeatureTogglesProperties featureTogglesProperties) {
+        this.featureTogglesProperties = featureTogglesProperties;
+    }
+
+    @GetMapping("/api/feature-toggles")
+    public FeatureTogglesProperties featureToggles(){
+        return featureTogglesProperties;
+    }
 }

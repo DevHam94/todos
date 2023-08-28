@@ -1,6 +1,10 @@
 todos:
   data:
     initialize: true
+  feature:
+    toggles:
+     auth: true
+     onlineUsersCounter: false
 
 site:
   author: SpringRunner
@@ -13,6 +17,7 @@ server:
       force: true
   error:
     include-message: always
+    include-binding-errors: always
 
 logging:
   level:
