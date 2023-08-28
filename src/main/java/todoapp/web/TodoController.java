@@ -33,10 +33,12 @@ public class TodoController {
         this.finder = finder;
     }
 
+    /*
     @ModelAttribute("site")
     public SiteProperties siteProperties() {
         return siteProperties;
     }
+    */
 
     @RequestMapping("/todos")
     public void todos() throws Exception {
