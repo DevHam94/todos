@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractView;
 import todoapp.core.todos.application.TodoFinder;
 import todoapp.core.todos.domain.Todo;
+import todoapp.web.convert.TodoToSpreadsheetConverter;
 import todoapp.web.model.SiteProperties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,8 @@ public class TodoController {
 
     @RequestMapping(path = "/todos", produces = "test/csv")
     public void downloadTodos(Model model) {
-        model.addAttribute("todos", finder.getAll());
+
+        model.addAttribute("todos", new TodoToSpreadsheetConverter().convert(finder.getAll()));
     }
 
     public static class TodoCsvViewResolver implements ViewResolver {

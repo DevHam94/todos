@@ -3,8 +3,16 @@ todos:
     initialize: true
 
 site:
-  author: 스프링러너
+  author: SpringRunner
   description: what're your plans today?
+
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+  error:
+    include-message: always
 
 logging:
   level:
