@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginController {
 
     private final UserPasswordVerifier userPasswordVerifier;
-    private final UserRegistration userRegistration
+    private final UserRegistration userRegistration;
     //private final SiteProperties siteProperties;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
