@@ -10,21 +10,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.web.model.SiteProperties;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 @Controller
 public class LoginController {
 
     private final UserPasswordVerifier userPasswordVerifier;
     private final UserRegistration userRegistration;
-    //private final SiteProperties siteProperties;
+    private final SiteProperties siteProperties;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public LoginController(UserPasswordVerifier userPasswordVerifier, UserRegistration userRegistration) {
+    public LoginController(UserPasswordVerifier userPasswordVerifier, UserRegistration userRegistration, SiteProperties siteProperties) {
         this.userPasswordVerifier = userPasswordVerifier;
         this.userRegistration = userRegistration;
+        this.siteProperties = siteProperties;
     }
 
     /*
@@ -40,16 +44,31 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public void loginProcess(@RequestParam String username,
-                             @RequestParam String password) {
+    public String loginProcess(@Valid LoginCommand command) {
 //        String username = request.getParameter("username");
 //        String password = request.getParameter("password");
+        logger.debug("login command: {}", command);
 
-        logger.debug("login command: {}, {}", username, password);
+        if(command.getUsername().length() < 4) {
+            // 입력값이 올바르지 않습니다.
+
+        }
+
+        try {
+            // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
+            userPasswordVerifier.verify(command.getUsername(), command.getPassword());
+        } catch (UserEntityNotFoundException error) {
+            // 2. 사용자가 없는 경우: 회원가입 처리 후 로그인 처리
+            userRegistration.join(command.getUsername(), command.getPassword());
+        }
+
+        return "redirect:/todos";
+
     }
 
     static class LoginCommand {
 
+        @Size(min = 4, max = 20)
         String username;
         String password;
 
