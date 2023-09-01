@@ -2,6 +2,7 @@ package todoapp.security.web.servlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import todoapp.security.AccessDeniedException;
@@ -25,22 +26,29 @@ import java.util.stream.Stream;
  */
 public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesAllowedSupport {
 
-    private final UserSessionRepository userSessionRepository;
+    //private final UserSessionRepository userSessionRepository;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public RolesVerifyHandlerInterceptor(UserSessionRepository userSessionRepository) {
-        this.userSessionRepository = userSessionRepository;
-    }
+//    public RolesVerifyHandlerInterceptor(UserSessionRepository userSessionRepository) {
+//        this.userSessionRepository = userSessionRepository;
+//    }
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // request.getUserPrincipal()
+        // request.isUserInRole(null)
+
         if(handler instanceof HandlerMethod) {
             RolesAllowed rolesAllowed = ((HandlerMethod) handler).getMethodAnnotation(RolesAllowed.class);
+            if(Objects.isNull(rolesAllowed)) {
+                rolesAllowed = AnnotatedElementUtils.findMergedAnnotation(((HandlerMethod) handler).getBeanType(), RolesAllowed.class);
+            }
+
             if (Objects.nonNull(rolesAllowed)) {
                 log.debug("verify roles-allower: {}", rolesAllowed);
 
                 // 1. 로그인이 되어 있나요?
-                UserSession userSession = userSessionRepository.get();
-                if (Objects.isNull(userSession)) {
+                //UserSession userSession = userSessionRepository.get();
+                if (Objects.isNull(request.getUserPrincipal())) {
                     // 로그인 안되어 있으면, 예외 발생 (로그인 되지 않았어요)
                     throw new UnauthorizedAccessException();
                 }
@@ -48,7 +56,7 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
                 // 2. 역할은 적절한가요?
                 // 역할이 적합하지 않으면, 예외를 발생시킬 예정
                 Set<String> matchedRoles = Stream.of(rolesAllowed.value())
-                        .filter(role -> userSession.hasRole(role))
+                        .filter(role -> request.isUserInRole(role))
                         .collect(Collectors.toSet());
 
                 log.debug("matched roles: {}", matchedRoles);

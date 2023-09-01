@@ -12,6 +12,7 @@ import todoapp.security.UserSession;
 import todoapp.security.UserSessionRepository;
 import todoapp.web.model.UserProfile;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
@@ -24,14 +25,16 @@ public class UserRestController {
     }*/
 
     @GetMapping("/api/user/profile")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<UserProfile> userProfile(UserSession userSession) {
         //User user = (User) session.getAttribute("user");
         //UserSession userSession = userSessionRepository.get();
         //HandlerMethodArgumentResolver
 
-        if (Objects.nonNull(userSession)) {
-            return ResponseEntity.ok(new UserProfile(userSession.getUser()));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        if (Objects.nonNull(userSession)) {
+//            return ResponseEntity.ok(new UserProfile(userSession.getUser()));
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(new UserProfile(userSession.getUser()));
     }
 }

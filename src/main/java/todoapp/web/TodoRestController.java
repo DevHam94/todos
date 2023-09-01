@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/todos")
+@RolesAllowed("ROLE_USER")
 public class TodoRestController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,7 +31,6 @@ public class TodoRestController {
     }
 
     @GetMapping
-    @RolesAllowed("ROLE_USER")
     public List<Todo> list() {
         return finder.getAll();
     }
