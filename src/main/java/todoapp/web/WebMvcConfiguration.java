@@ -3,22 +3,33 @@ package todoapp.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
+import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.core.todos.domain.Todo;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionRepository;
+import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
+import todoapp.security.web.servlet.UserSessionHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,8 +42,23 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    private UserSessionRepository userSessionRepository;
+
     public WebMvcConfiguration() {
         logger.debug("스프링 MVC 설정자가 생성됩니다.");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionRepository));
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggingHandlerInterceptor());
+        registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionRepository));
     }
 
     @Override
@@ -78,6 +104,20 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
             }
         });
         converters.add(new ObjectToStringHttpMessageConverter(null));
+    }
+
+    @Bean
+    public FilterRegistrationBean<CommonsRequestLoggingFilter> commonsRequestLoggingFilter() {
+        CommonsRequestLoggingFilter commonsRequestLoggingFilter = new CommonsRequestLoggingFilter();
+        commonsRequestLoggingFilter.setIncludeHeaders(true);
+        commonsRequestLoggingFilter.setIncludePayload(true);
+        commonsRequestLoggingFilter.setIncludeClientInfo(true);
+
+        FilterRegistrationBean<CommonsRequestLoggingFilter> filter = new FilterRegistrationBean<>();
+        filter.setFilter(commonsRequestLoggingFilter);
+        filter.setUrlPatterns(Collections.singletonList("/*"));
+
+        return filter;
     }
 
     @Bean(name = "todos")

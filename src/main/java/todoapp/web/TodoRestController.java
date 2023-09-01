@@ -9,6 +9,7 @@ import todoapp.core.todos.application.TodoEditor;
 import todoapp.core.todos.application.TodoFinder;
 import todoapp.core.todos.domain.Todo;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -29,6 +30,7 @@ public class TodoRestController {
     }
 
     @GetMapping
+    @RolesAllowed("ROLE_USER")
     public List<Todo> list() {
         return finder.getAll();
     }

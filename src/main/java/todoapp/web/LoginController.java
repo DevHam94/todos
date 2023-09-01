@@ -8,6 +8,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
 import todoapp.core.user.domain.User;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Controller
 @SessionAttributes("user")
@@ -50,8 +53,11 @@ public class LoginController {
      */
 
     @GetMapping("/login")
-    public void loginForm() {
-
+    public String loginForm() {
+        if (Objects.nonNull(userSessionRepository.get())) {
+            return "redirect:/todos";
+        }
+        return "login";
     }
 
     @PostMapping("/login")
@@ -102,6 +108,11 @@ public class LoginController {
     public String handleUserPasswordNotMatchedException(UserPasswordNotMatchedException error, Model model) {
         model.addAttribute("message", error.getMessage());
         return "login";
+    }
+
+    @RequestMapping("/logout")
+    public View logout() {
+        return new RedirectView("/todos");
     }
 
     static class LoginCommand {
