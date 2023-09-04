@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -38,7 +39,8 @@ import java.util.Objects;
 //@ContextConfiguration(classes = TodosApplication.class)
 //@WebAppConfiguration
 //@SpringJUnitConfig(TodosApplication.class)
-@SpringJUnitWebConfig(TodosApplication.class)
+//@SpringJUnitWebConfig(TodosApplication.class)
+@SpringBootTest
 public class LoginControllerTests {
 
     @Autowired ApplicationContext applicationContext;
