@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -23,6 +24,7 @@ import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
 import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.core.todos.domain.Todo;
+import todoapp.core.user.domain.ProfilePictureStorage;
 import todoapp.security.UserSession;
 import todoapp.security.UserSessionRepository;
 import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
@@ -46,6 +48,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     private UserSessionRepository userSessionRepository;
 
+    @Autowired
+    private ProfilePictureStorage profilePictureStorage;
+
     public WebMvcConfiguration() {
         logger.debug("스프링 MVC 설정자가 생성됩니다.");
     }
@@ -53,6 +58,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionRepository));
+    }
+
+    @Override
+    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
+        handlers.add(new UserController.ProfilePictureReturnValueHandler(profilePictureStorage));
     }
 
     @Override
